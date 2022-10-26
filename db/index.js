@@ -58,4 +58,24 @@ async function createPost({authorId, title, content}) {
     }
 }
 
+async function updatePost(id, fields = {}) 
+const setString = Object.keys(fields).map((key,index) => `"${key}"=$${index+1}`).join(', ');
+  
+if(setString.length === 0) return;
+
+   { try {
+    
+    const {rows: [posts]} = await client.query(`
+    UPDATE posts
+    SET ${setString}
+    WHERE id=${id}
+    RETURN *;
+    `, Object.values(fields));
+}
+
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {client, getALLUsers, createUser, updateUser, createPost}
