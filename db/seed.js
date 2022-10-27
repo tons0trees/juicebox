@@ -1,4 +1,4 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags, addTagsToPost} = require('./index');
 
 async function dropTables() {
     try{
@@ -45,8 +45,8 @@ async function createTables(){
 
         await client.query(`
             CREATE TABLE post_tags (
-                "postId" INTEGER REFERENCES posts(id) UNIQUE,
-                "tagId" INTEGER REFERENCES tags(id) UNIQUE
+                "postId" INTEGER REFERENCES posts(id) UNIQUE NOT NULL, 
+                "tagId" INTEGER REFERENCES tags(id) UNIQUE NOT NULL
             )
         `);
 
@@ -133,6 +133,10 @@ async function testDB() {
 
         const tagsWeMade = await createTags(['ABC','DEF','GHI']);
         console.log(tagsWeMade)
+
+        console.log("tags to post");
+        await addTagsToPost(2, tagsWeMade);
+
     } catch (error) {
         console.error(error);
         throw error;
