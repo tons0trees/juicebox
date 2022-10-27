@@ -101,13 +101,16 @@ async function getPostsByUser(userId) {
         WHERE id=${userId};
     `)
 
-    console.log(user)
-
-    const post = await getPostsByUser(userId)
-    
-user["posts"] = post
-
+    if (user != undefined) {
+        const post = await getPostsByUser(userId)
+        user["posts"] = post
         return user
+    } else {
+        return null
+    }
+
+    
+
     } catch (error) {
         throw error;
     }

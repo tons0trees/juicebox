@@ -58,12 +58,20 @@ async function createInitialUsers(){
     }
 }
 
+async function createInitialPosts() {
+    const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test'})
+    console.log(makePost);
+    const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2'})
+    const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3'})
+}
+
 async function rebuildDB(){
     try{
         client.connect();
         await dropTables();
         await createTables();
         await createInitialUsers();
+        await createInitialPosts();
 
     } catch(error){
         console.error(error)
@@ -83,11 +91,6 @@ async function testDB() {
         const updateUserResults = await updateUser(users[0].id, {name: "newName sogood", location: "Lesterville, KY"})
         console.log("Result: ", updateUserResults);
 
-        console.log('Creating a post');
-        const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test'})
-        console.log(makePost);
-        const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2'})
-
 
         console.log("Calling getall posts");
         const posts = await getALLPosts()
@@ -106,7 +109,7 @@ async function testDB() {
         console.log(postsByUser)
 
         console.log("user by id");
-        const userById = await getUserById(5)
+        const userById = await getUserById(1)
         console.log(userById)
 
 
