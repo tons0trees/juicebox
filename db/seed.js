@@ -91,6 +91,10 @@ async function testDB() {
         const posts = await getALLPosts()
         console.log(posts);
 
+        console.log("editing a post");
+        const post = await updatePost(1,{title: '1', content: 'this is content', active: true})
+        console.log(post)
+
 
         console.log("Finished database test!");
     } catch (error) {

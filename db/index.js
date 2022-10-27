@@ -46,9 +46,10 @@ async function getALLUsers() {
 
 async function createPost({authorId, title, content}) {
     try {
-        const {rows: [posts]} = client.query(`
+        const {rows:[posts]} =await client.query(`
         INSERT INTO posts("authorId", title, content)
-        VALUES ($1, $2, $3);
+        VALUES ($1, $2, $3)
+        RETURNING *;
         `, [authorId, title, content])
         return posts
     } catch (error) {
@@ -59,15 +60,15 @@ async function createPost({authorId, title, content}) {
 async function updatePost(id, {title, content, active}) {
     const queryString = `
         UPDATE posts
-        SET title=${title}, content=${content}, active=${active}
+        SET title=$1, content=$2, active=$3
         WHERE id=${id}
         RETURNING *;`
   
-    if(setString.length === 0) return;
+    if(queryString.length === 0) return;
 
    try {
-    const response = await client.query(queryString);
-    return response;
+    const {rows:[post]} = await client.query(queryString,[title, content, active]);
+    return post;
     } catch (error) {
         throw error;
     }
