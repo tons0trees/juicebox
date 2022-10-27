@@ -1,4 +1,4 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser} = require('./index');
 
 async function dropTables() {
     try{
@@ -86,6 +86,8 @@ async function testDB() {
         console.log('Creating a post');
         const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test'})
         console.log(makePost);
+        const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2'})
+
 
         console.log("Calling getall posts");
         const posts = await getALLPosts()
@@ -94,6 +96,15 @@ async function testDB() {
         console.log("editing a post");
         const post = await updatePost(1,{title: '1', content: 'this is content', active: true})
         console.log(post)
+
+        console.log("get all posts");
+        const getAllposts= await getALLPosts()
+        console.log(getAllposts)
+
+        console.log("Posts by user");
+        const postsByUser= await getPostsByUser(2)
+        console.log(postsByUser)
+
 
 
         console.log("Finished database test!");

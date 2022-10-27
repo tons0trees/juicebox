@@ -82,4 +82,17 @@ async function getALLPosts() {
         return rows;
 }
 
-module.exports = {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts}
+async function getPostsByUser(userId) {
+    try {
+      const {rows} = await client.query(`
+        SELECT * FROM posts
+        WHERE "authorId"=${ userId };
+      `);
+  
+      return {rows};
+    } catch (error) {
+      throw error;
+    }
+  }
+
+module.exports = {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser}
