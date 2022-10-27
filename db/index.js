@@ -84,15 +84,33 @@ async function getALLPosts() {
 
 async function getPostsByUser(userId) {
     try {
-      const {rows} = await client.query(`
+      const {rows: posts} = await client.query(`
         SELECT * FROM posts
         WHERE "authorId"=${ userId };
       `);
-  
-      return {rows};
+      return posts;
     } catch (error) {
       throw error;
     }
   }
 
-module.exports = {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser}
+  async function getUserById(userId) {
+    try {
+    const {rows: [user]} = await client.query(`
+    SELECT id, username, name, location FROM users
+        WHERE id=${userId};
+    `)
+
+    console.log(user)
+
+    const post = await getPostsByUser(userId)
+    
+user["posts"] = post
+
+        return user
+    } catch (error) {
+        throw error;
+    }
+  }
+
+module.exports = {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById}

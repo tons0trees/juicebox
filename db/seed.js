@@ -1,4 +1,4 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById} = require('./index');
 
 async function dropTables() {
     try{
@@ -105,6 +105,9 @@ async function testDB() {
         const postsByUser= await getPostsByUser(2)
         console.log(postsByUser)
 
+        console.log("user by id");
+        const userById = await getUserById(5)
+        console.log(userById)
 
 
         console.log("Finished database test!");
