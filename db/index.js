@@ -46,13 +46,11 @@ async function getALLUsers() {
 
 async function createPost({authorId, title, content}) {
     try {
-        const results = client.query(`
+        const {rows: [posts]} = client.query(`
         INSERT INTO posts("authorId", title, content)
-        VALUES (${authorId}, ${title}, ${content})
-        ON CONFLICT (title) DO NOTHING
-        RETURN *;
-        `)
-        return results
+        VALUES ($1, $2, $3);
+        `, [authorId, title, content])
+        return posts
     } catch (error) {
         throw error;
     }
