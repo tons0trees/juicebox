@@ -1,7 +1,9 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags} = require('./index');
 
 async function dropTables() {
     try{
+        await client.query(`DROP TABLE IF EXISTS post_tags;`);
+        await client.query(`DROP TABLE IF EXISTS tags;`);
         await client.query(`DROP TABLE IF EXISTS posts;`)
         await client.query(`DROP TABLE IF EXISTS users;`);
     }catch (error) {
@@ -32,6 +34,20 @@ async function createTables(){
             content TEXT NOT NULL,
             active BOOLEAN DEFAULT TRUE
         );
+        `);
+
+        await client.query(`
+            CREATE TABLE tags (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) UNIQUE NOT NULL
+            );
+        `);
+
+        await client.query(`
+            CREATE TABLE post_tags (
+                "postId" INTEGER REFERENCES posts(id) UNIQUE,
+                "tagId" INTEGER REFERENCES tags(id) UNIQUE
+            )
         `);
 
         console.log("Finished building tables!")
@@ -114,6 +130,9 @@ async function testDB() {
 
 
         console.log("Finished database test!");
+
+        const tagsWeMade = await createTags(['ABC','DEF','GHI']);
+        console.log(tagsWeMade)
     } catch (error) {
         console.error(error);
         throw error;
