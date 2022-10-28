@@ -76,10 +76,10 @@ async function createInitialUsers(){
 }
 
 async function createInitialPosts() {
-    const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test'})
+    const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test', tags:[]})
     console.log(makePost);
-    const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2'})
-    const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3'})
+    const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2', tags: []})
+    const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3', tags: []})
 }
 
 async function createInitialTags() {
@@ -115,6 +115,7 @@ async function rebuildDB(){
         await createTables();
         await createInitialUsers();
         await createInitialPosts();
+        console.log('made it here')
         await createInitialTags();
 
     } catch(error){
@@ -131,43 +132,55 @@ async function testDB() {
         const users = await getALLUsers();
         console.log("getALLUsers:", users);
 
-        console.log("Calling updateUser on user[0]");
-        const updateUserResults = await updateUser(users[0].id, {name: "newName sogood", location: "Lesterville, KY"})
-        console.log("Result: ", updateUserResults);
+        // console.log("Calling updateUser on user[0]");
+        // const updateUserResults = await updateUser(users[0].id, {name: "newName sogood", location: "Lesterville, KY"})
+        // console.log("Result: ", updateUserResults);
 
 
         console.log("Calling getall posts");
         const posts = await getALLPosts()
         console.log(posts);
 
-        console.log("editing a post");
-        const post = await updatePost(1,{title: '1', content: 'this is content', active: true})
-        console.log(post)
+        // console.log("editing a post");
+        // const post = await updatePost(1,{title: '1', content: 'this is content', active: true})
+        // console.log(post)
 
-        console.log("get all posts");
-        const getAllposts= await getALLPosts()
-        console.log(getAllposts)
+        // console.log("get all posts");
+        // const getAllposts= await getALLPosts()
+        // console.log(getAllposts)
 
-        console.log("Posts by user");
-        const postsByUser= await getPostsByUser(2)
-        console.log(postsByUser)
+        // console.log("Posts by user");
+        // const postsByUser= await getPostsByUser(2)
+        // console.log(postsByUser)
 
-        console.log("user by id");
-        const userById = await getUserById(1)
-        console.log(userById)
+        // console.log("user by id");
+        // const userById = await getUserById(1)
+        // console.log(userById)
+
+
+        
+        // const tagsWeMade = await createTags(['ABC','DEF','GHI']);
+        // console.log(tagsWeMade)
+        
+        // console.log("Add tags to post");
+        // await addTagsToPost(2, tagsWeMade);
+        
+        // console.log("get postid")
+        // const postById = await getPostById(2)
+        // console.log(postById)
+
+        // console.log("ids")
+        // const post_id = await getPostById(2)
+        // console.log(post_id)
+
+        // console.log("all posts")
+        // const all_posts = await getALLPosts()
+        // console.log(all_posts)
+
+        
 
 
         console.log("Finished database test!");
-
-        const tagsWeMade = await createTags(['ABC','DEF','GHI']);
-        console.log(tagsWeMade)
-
-        console.log("Add tags to post");
-        await addTagsToPost(2, tagsWeMade);
-
-        console.log("get postid")
-        const postById = await getPostById(2)
-        console.log(postById)
 
     } catch (error) {
         console.error(error);
