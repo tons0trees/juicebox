@@ -137,54 +137,63 @@ async function getUserById(userId) {
 
 async function createTags(tagList) {
     if (tagList.length === 0) return;
-    
-    try {
-        const valueStr1 = tagList.map((elem,index) => `($${index+1})`).join(', ')
 
-        await client.query(`
+    try {
+        const valueStr1 = tagList
+            .map((elem, index) => `($${index + 1})`)
+            .join(", ");
+
+        await client.query(
+            `
             INSERT INTO tags(name)
             VALUES ${valueStr1}
             ON CONFLICT (name) DO NOTHING;
-        `,tagList);
+        `,
+            tagList
+        );
 
-        const valueStr2 = tagList.map((elem,index) => `$${index+1}`).join(', ')
-        const {rows} = await client.query(`
+        const valueStr2 = tagList
+            .map((elem, index) => `$${index + 1}`)
+            .join(", ");
+        const { rows } = await client.query(
+            `
             SELECT * FROM tags
             WHERE name
             IN (${valueStr2});
-        `,tagList)
+        `,
+            tagList
+        );
 
-        return rows
+        return rows;
     } catch (error) {
-        throw error
+        throw error;
     }
 }
 
-    async function createPostTag(postId, tagId){
-        try{
-            await client.query(`
+async function createPostTag(postId, tagId) {
+    try {
+        const response = await client.query(
+            `
             INSERT INTO post_tags("postId", "tagId")
             VALUES ($1, $2)
-            `, [postId, tagId]);
-            console.log('i am working')
-        }catch(error){
-            throw error;
-        }
+            ON CONFLICT ("postId", "tagId") DO NOTHING;
+            `,
+            [postId, tagId]
+        );
+    } catch (error) {
+        throw error;
     }
+}
 
-    async function addTagsToPost(postId, tagList) {
-        try {
-            const createPostTagPromises = tagList.map(
-                (tag) => {createPostTag(postId, tag.id)
-                });
-                await Promise.all(createPostTagPromises);
-                console.log('working')
-
-        } catch (error) {
-            throw error;
-        }
-
-
+async function addTagsToPost(postId, tagList) {
+    try {
+        const createPostTagPromises = tagList.map((tag) => {
+            return createPostTag(postId, tag.id);
+        });
+        await Promise.all(createPostTagPromises);
+    } catch (error) {
+        throw error;
+    }
 }
 
 module.exports = {
@@ -198,5 +207,5 @@ module.exports = {
     getPostsByUser,
     getUserById,
     createTags,
-    addTagsToPost
-}
+    addTagsToPost,
+};
