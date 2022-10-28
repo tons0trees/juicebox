@@ -1,4 +1,4 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags, addTagsToPost, getPostById} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags, addTagsToPost, getPostById, getPostsByTagName} = require('./index');
 
 async function dropTables() {
     try{
@@ -182,6 +182,10 @@ async function testDB() {
         tags: ["#youcandoanything", "#redfish", "#bluefish"]
         });
         console.log("Result:", updatePostTagsResult);
+
+        console.log("Calling getPostsByTagName with #happy");
+        const postsWithHappy = await getPostsByTagName("#happy");
+        console.log("Result:", postsWithHappy);
         
 
 
