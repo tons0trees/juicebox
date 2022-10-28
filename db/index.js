@@ -74,24 +74,62 @@ async function createPost({ authorId, title, content, tags=[] }) {
         throw error;
     }
 }
-
-async function updatePost(id, { title, content, active }) {
-    const queryString = `
+async function updatePost(postId, fields = {}) {
+    const {tags} = fields;
+    delete fields.tags;
+    
+    const setString = Object.keys(fields).map(
+        (key, index) => `"${key}"=$${index +1}`).join(', ');
+        
+        try {
+            if (setString.length > 0){
+        await client.query(`
         UPDATE posts
-        SET title=$1, content=$2, active=$3
-        WHERE id=${id}
-        RETURNING *;`;
+        SET ${setString}
+        WHERE id =${ postId }
+        RETURNING *;  
+        `, Object.values(fields));
+      }  
 
-    if (queryString.length === 0) return;
+      if (tags === undefined) {
+        return await getPostById(postId);
+      }
 
-    try {
-        const {
-            rows: [post],
-        } = await client.query(queryString, [title, content, active]);
-        return post;
+      const tagList = await createTags(tags);
+      const tagListIdString = tagList.map(
+            tag => `${tag.id}`
+            ).join(', ');
+
+            await client.query(`
+            DELETE FROM post_tags
+            WHERE "tagId"
+            NOT IN (${ tagListIdString })
+            AND "postId"=$1;
+            `, [postId]);
+
+            await addTagsToPost(postId, tagList);
+
+        return await getPostById(postId);
     } catch (error) {
         throw error;
     }
+
+    // const queryString = `
+    //     UPDATE posts
+    //     SET title=$1, content=$2, active=$3
+    //     WHERE id=${id}
+    //     RETURNING *;`;
+
+    // if (queryString.length === 0) return;
+
+//     try {
+//         const {
+//             rows: [post],
+//         } = await client.query(queryString, [title, content, active]);
+//         return post;
+//     } catch (error) {
+//         throw error;
+//     }
 }
 
 async function getALLPosts() {
