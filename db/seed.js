@@ -76,10 +76,11 @@ async function createInitialUsers(){
 }
 
 async function createInitialPosts() {
-    const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test', tags:[]})
-    console.log(makePost);
-    const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2', tags: []})
-    const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3', tags: []})
+    const makePost = await createPost({authorId: '2', title: 'test post', content: 'this is a test', tags:['hey', 'hello']})
+    const makePost2 = await createPost({authorId: '1', title: 'test post #2', content: 'this is a test#2', tags: ['a', 'b']})
+    const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3', tags: ['hello', '6']})
+    const makePost4 = await createPost({authorId: '3', title: 'test post #4', content: 'this is a test#4', tags: []})
+
 }
 
 async function createInitialTags() {
@@ -115,8 +116,7 @@ async function rebuildDB(){
         await createTables();
         await createInitialUsers();
         await createInitialPosts();
-        console.log('made it here')
-        await createInitialTags();
+        // await createInitialTags();
 
     } catch(error){
         console.error(error)

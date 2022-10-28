@@ -147,7 +147,7 @@ async function getUserById(userId) {
 }
 
 async function createTags(tagList) {
-    if (tagList.length === 0) return;
+    if (tagList.length === 0) return [];
 
     try {
         const valueStr1 = tagList
