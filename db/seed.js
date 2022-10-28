@@ -1,4 +1,4 @@
-const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags, addTagsToPost} = require('./index');
+const {client, getALLUsers, createUser, updateUser, createPost, updatePost, getALLPosts, getPostsByUser, getUserById, createTags, addTagsToPost, getPostById} = require('./index');
 
 async function dropTables() {
     try{
@@ -82,13 +82,40 @@ async function createInitialPosts() {
     const makePost3 = await createPost({authorId: '1', title: 'test post #3', content: 'this is a test#3'})
 }
 
+async function createInitialTags() {
+    try {
+        console.log("Starting to create tags...");
+
+        const [happy, sad, inspo, catman] = await createTags([
+            '#happy',
+            '#worst-day-ever',
+            '#youcandoanything',
+            '#catmandoeverything'
+        ]);
+
+        const [postOne, postTwo, postThree] = await getALLPosts();
+
+        await addTagsToPost(postOne.id, [happy, inspo]);
+        await addTagsToPost(postTwo.id, [sad, inspo]);
+        await addTagsToPost(postThree.id, [happy, catman, inspo]);
+
+        console.log("Finished creating tags!");
+    } catch (error) {
+       console.log("Error creating tags!");
+        throw error 
+    }
+}
+
+
 async function rebuildDB(){
     try{
         client.connect();
+        
         await dropTables();
         await createTables();
         await createInitialUsers();
         await createInitialPosts();
+        await createInitialTags();
 
     } catch(error){
         console.error(error)
@@ -137,6 +164,10 @@ async function testDB() {
 
         console.log("Add tags to post");
         await addTagsToPost(2, tagsWeMade);
+
+        console.log("get postid")
+        const postById = await getPostById(2)
+        console.log(postById)
 
     } catch (error) {
         console.error(error);
