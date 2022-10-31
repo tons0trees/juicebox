@@ -2,6 +2,13 @@ const portNum = 3000;
 const express = require('express');
 const server = express();
 
+const {client} = require('./db');
+client.connect();
+
+const morgan = require('morgan');
+server.use(morgan('dev'));
+server.use(express.json())
+
 //First middleware piece
 server.use((req, res, next) => {
     console.log('<___Body Logger START___>');
