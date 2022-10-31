@@ -1,15 +1,13 @@
+require('dotenv').config();
+
 const portNum = 3000;
 const express = require('express');
 const server = express();
-
-const {client} = require('./db');
-client.connect();
 
 const morgan = require('morgan');
 server.use(morgan('dev'));
 server.use(express.json())
 
-//First middleware piece
 server.use((req, res, next) => {
     console.log('<___Body Logger START___>');
     console.log(req.body);
@@ -21,7 +19,8 @@ server.use((req, res, next) => {
 const apiRouter = require("./api");
 server.use('/api', apiRouter);
 
-  
+const {client} = require('./db');
+client.connect();
 
 server.listen(portNum, () => {
     console.log('The server is up and listening on port:', portNum);
