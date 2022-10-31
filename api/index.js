@@ -16,6 +16,8 @@ apiRouter.use(async (req, res, next) => {
 
         try {
             const {id} = jwt.verify(token, JWT_SECRET);
+
+            
         } catch (error) {
             
         }
