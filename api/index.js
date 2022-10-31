@@ -17,10 +17,18 @@ apiRouter.use(async (req, res, next) => {
         try {
             const {id} = jwt.verify(token, JWT_SECRET);
 
-            
-        } catch (error) {
-            
+            if (id) {
+                req.user = await getUserById(id);
+                next();
+            }
+        } catch ({name, message}) {
+            next({name, message});
         }
+    } else {
+        next({
+            name: 'AuthorizationHeaderError',
+            message: `Authorization token must start with ${prefix}`
+        })
     }
 })
 
