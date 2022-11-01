@@ -15,6 +15,21 @@ usersRouter.get('/', async (req, res)=> {
     });
 });
 
+usersRouter.post('/register', async (req, res, next)=> {
+    const {username, password, name, location } = req.body;
+    console.log('im in register', username)
+    
+    try {
+        const userObj = await getUserByUsername(username)
+        if (userObj){
+            next({name:'UserExistsError',
+            message:'A user by that username already exists'})
+        }
+    } catch (error) {
+        
+    }
+})
+
 usersRouter.post('/login', async (req, res, next)=> {
     const {username, password} = req.body;
 
