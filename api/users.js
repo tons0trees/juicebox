@@ -18,7 +18,6 @@ usersRouter.get('/', async (req, res)=> {
 
 usersRouter.post('/register', async (req, res, next)=> {
     const {username, password, name, location } = req.body;
-    console.log('im in register', username)
     
     try {
         const userObj = await getUserByUsername(username)
@@ -34,16 +33,15 @@ usersRouter.post('/register', async (req, res, next)=> {
             "name": name, 
             "location": location
         })
-        const token = jwt.sign (
-            newUser,
-            process.env.JWT_SECRET
-            // ,{
-        //     expiresIn: '1w'
-        // })
+        const token = jwt.sign(
+            newUser, 
+            process.env.JWT_SECRET, 
+            {expiresIn: '1w'}
         )
+
         res.send({
             message: "thank you for signing up",
-            token
+            "token": token
         })
     } catch ({name, message}) {
         next({name, message})
