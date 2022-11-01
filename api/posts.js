@@ -30,8 +30,7 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
     }
 })
 
-postsRouter.patch('/:postId', requireUser, async (req, res, next)=>{
-    res.send
+postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
     const post_Id = req.params.postId;
     const {title, content, tags=""} = req.body;
     const fields= {}
@@ -62,6 +61,18 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next)=>{
         next({name, message})
     }
 
+})
+
+postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+    const post_Id = req.params.postId;
+    console.log(post_Id);
+
+    try {
+        const postToDelete = await getPostById(post_Id)
+        
+    } catch ({name, message}) {
+        next({name, message});
+    }
 })
 
 postsRouter.get('/', async (req, res) =>{
