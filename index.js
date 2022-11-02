@@ -8,6 +8,9 @@ const morgan = require('morgan');
 server.use(morgan('dev'));
 server.use(express.json())
 
+const cors = require("cors");
+server.use(cors());
+
 server.use((req, res, next) => {
     console.log('<___Body Logger START___>');
     console.log(req.body);
