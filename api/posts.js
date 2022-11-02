@@ -89,9 +89,11 @@ postsRouter.get('/', async (req, res) =>{
     try {
         const allPosts = await getALLPosts();
 
-        const activePosts = allPosts.filter(elem => elem.active)
+        const activePosts = allPosts.filter(elem => {
+            return elem.active || (req.user && elem.author.id === req.user.id)
+        })
 
-        res.send({activePosts})
+        res.send({"posts": activePosts})
         
     } catch (error) {
         
