@@ -331,6 +331,22 @@ async function getPostsByTagName(tagName) {
     }
   }
 
+  async function deletePost(post_id){
+    try{
+        const {rows: [deletedPost]} = await client.query(`
+        UPDATE posts
+        SET active=false
+        WHERE id= ${post_id}
+        RETURNING*;`
+        )
+        return deletedPost;
+    }catch(error){
+        throw error;
+    }
+
+}
+    
+    
 module.exports = {
     client,
     getALLUsers,
@@ -346,5 +362,6 @@ module.exports = {
     getPostById,
     getPostsByTagName,
     getAllTags,
-    getUserByUsername
+    getUserByUsername,
+    deletePost
 };

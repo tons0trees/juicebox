@@ -7,7 +7,7 @@ postsRouter.use((req, res, next) => {
 });
 
 const {requireUser} = require('./utils')
-const {getALLPosts, createPost, getPostById, updatePost}= require('../db')
+const {getALLPosts, createPost, getPostById, updatePost, deletePost}= require('../db')
 
 postsRouter.post('/', requireUser, async (req, res, next) => {
     const {title, content, tags=""} = req.body
@@ -69,14 +69,17 @@ postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
     
     try {
         const postToDelete = await getPostById(post_Id)
-        console.log('does this work?')
-        res.send({"post":postToDelete })
 
-        next({
-            name:'UnauthorizedPostError',
-            message: 'Post does not exist'
-        })
-
+        if (postToDelete.author.id===req.user.id){
+            const returnedPost = await deletePost(post_Id)
+            console.log(returnedPost)
+            res.send({"post": returnedPost})
+        }else{
+            next({
+                name: 'UnauthorizedUserError',
+                message: 'You cannot delete a post that is not yours'
+            })
+        }       
     } catch ({name, message}) {
         next({name, message});
     }
