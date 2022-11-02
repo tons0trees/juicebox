@@ -66,10 +66,17 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
 postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
     const post_Id = req.params.postId;
     console.log(post_Id);
-
+    
     try {
         const postToDelete = await getPostById(post_Id)
-        
+        console.log('does this work?')
+        res.send({"post":postToDelete })
+
+        next({
+            name:'UnauthorizedPostError',
+            message: 'Post does not exist'
+        })
+
     } catch ({name, message}) {
         next({name, message});
     }

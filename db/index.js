@@ -255,6 +255,13 @@ try {
     WHERE id=$1;
     `, [postId]);
 
+    if (!post){
+        throw {
+            name:'postNotFound', 
+            message:'There is no post with that ID'
+        }
+    }
+
     const {rows: tags} = await client.query(`
     SELECT tags.*
     FROM tags
