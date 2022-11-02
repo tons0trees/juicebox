@@ -86,10 +86,17 @@ postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
 })
 
 postsRouter.get('/', async (req, res) =>{
-    const posts = await getALLPosts();
-    res.send({
-        posts
-    })
+    try {
+        const allPosts = await getALLPosts();
+
+        const activePosts = allPosts.filter(elem => elem.active)
+
+        res.send({activePosts})
+        
+    } catch (error) {
+        
+    }
+    
 })
 
 
