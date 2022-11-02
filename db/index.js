@@ -258,6 +258,13 @@ try {
     WHERE id=$1;
     `, [postId]);
 
+    if (!post){
+        throw {
+            name:'postNotFound', 
+            message:'There is no post with that ID'
+        }
+    }
+
     const {rows: tags} = await client.query(`
     SELECT tags.*
     FROM tags
@@ -327,6 +334,22 @@ async function getPostsByTagName(tagName) {
     }
   }
 
+  async function deletePost(post_id){
+    try{
+        const {rows: [deletedPost]} = await client.query(`
+        UPDATE posts
+        SET active=false
+        WHERE id= ${post_id}
+        RETURNING*;`
+        )
+        return deletedPost;
+    }catch(error){
+        throw error;
+    }
+
+}
+    
+    
 module.exports = {
     client,
     getALLUsers,
@@ -342,5 +365,6 @@ module.exports = {
     getPostById,
     getPostsByTagName,
     getAllTags,
-    getUserByUsername
+    getUserByUsername,
+    deletePost
 };
