@@ -5,8 +5,6 @@ const jwt = require('jsonwebtoken');
 const {getUserById} = require('../db');
 const {JWT_SECRET} = process.env;
 
-// console.log(JWT_SECRET);
-
 apiRouter.use(async (req, res, next) => {
     const prefix = 'Bearer '
     const auth = req.header('Authorization')
@@ -32,7 +30,7 @@ apiRouter.use(async (req, res, next) => {
     }
 })
 
-apiRouter.use((req, res, next)=>{
+apiRouter.use((req, res, next) => {
     if (req.user){
         console.log("user is set: ", req.user);
     }
@@ -49,13 +47,12 @@ apiRouter.use('/posts', postsRouter);
 const tagsRouter = require('./tags');
 apiRouter.use('/tags', tagsRouter);
 
-apiRouter.use((error, req, res, next)=> {
+apiRouter.use((error, req, res, next) => {
     res.send({  
         name: error.name,
         message: error.message
     })
 })
-
 
 
 module.exports = apiRouter;

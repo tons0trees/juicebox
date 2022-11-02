@@ -65,11 +65,12 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
 
 postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
     const post_Id = req.params.postId;
-    console.log(post_Id);
 
     try {
         const postToDelete = await getPostById(post_Id)
+        console.log(postToDelete);
         
+        next();
     } catch ({name, message}) {
         next({name, message});
     }

@@ -174,8 +174,8 @@ async function getUserById(userId) {
     `);
 
         if (user != undefined) {
-            const post = await getPostsByUser(userId);
-            user["posts"] = post;
+            const posts = await getPostsByUser(userId);
+            user["posts"] = posts;
             return user;
         } else {
             return null;
@@ -254,6 +254,14 @@ try {
     FROM posts
     WHERE id=$1;
     `, [postId]);
+
+    if (!post) {
+        throw {
+            name: 'PostNotFound',
+            message: 'There is no post with that ID'
+        }
+    };
+
 
     const {rows: tags} = await client.query(`
     SELECT tags.*
@@ -341,3 +349,10 @@ module.exports = {
     getAllTags,
     getUserByUsername
 };
+
+
+function foo() {
+    (req, res, next) => {
+        
+    }
+}
