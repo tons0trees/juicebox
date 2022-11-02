@@ -7,7 +7,7 @@ postsRouter.use((req, res, next) => {
 });
 
 const {requireUser} = require('./utils')
-const {getALLPosts, createPost, getPostById, updatePost}= require('../db')
+const {getALLPosts, createPost, getPostById, updatePost, deletePost}= require('../db')
 
 postsRouter.post('/', requireUser, async (req, res, next) => {
     const {title, content, tags=""} = req.body
@@ -30,8 +30,7 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
     }
 })
 
-postsRouter.patch('/:postId', requireUser, async (req, res, next)=>{
-    res.send
+postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
     const post_Id = req.params.postId;
     const {title, content, tags=""} = req.body;
     const fields= {}
@@ -64,11 +63,42 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next)=>{
 
 })
 
+postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+    const post_Id = req.params.postId;
+    console.log(post_Id);
+    
+    try {
+        const postToDelete = await getPostById(post_Id)
+
+        if (postToDelete.author.id===req.user.id){
+            const returnedPost = await deletePost(post_Id)
+            console.log(returnedPost)
+            res.send({"post": returnedPost})
+        }else{
+            next({
+                name: 'UnauthorizedUserError',
+                message: 'You cannot delete a post that is not yours'
+            })
+        }       
+    } catch ({name, message}) {
+        next({name, message});
+    }
+})
+
 postsRouter.get('/', async (req, res) =>{
-    const posts = await getALLPosts();
-    res.send({
-        posts
-    })
+    try {
+        const allPosts = await getALLPosts();
+
+        const activePosts = allPosts.filter(elem => {
+            return elem.active || (req.user && elem.author.id === req.user.id)
+        })
+
+        res.send({"posts": activePosts})
+        
+    } catch (error) {
+        
+    }
+    
 })
 
 
