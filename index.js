@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const portNum = 3000;
+const { PORT = 3000 } = process.env
 const express = require('express');
 const server = express();
 
@@ -22,6 +22,6 @@ server.use('/api', apiRouter);
 const {client} = require('./db');
 client.connect();
 
-server.listen(portNum, () => {
-    console.log('The server is up and listening on port:', portNum);
+server.listen(PORT, () => {
+    console.log('The server is up and listening on port:', PORT);
 })
